@@ -2,11 +2,11 @@
 
 namespace ExpressBase.ServerEvents.Services
 {
-    public class EbSeBaseService : Service
+    public class BaseService : Service
     {
         protected IServerEvents ServerEvents;
 
-        public EbSeBaseService(IServerEvents _se)
+        public BaseService(IServerEvents _se)
         {
             this.ServerEvents = _se;
         }

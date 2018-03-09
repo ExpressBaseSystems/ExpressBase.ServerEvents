@@ -5,7 +5,7 @@ using System;
 
 namespace ExpressBase.ServerEvents.Services
 {
-    public class NotifyServices : EbSeBaseService
+    public class NotifyServices : BaseService
     {
         public NotifyServices(IServerEvents _se) : base(_se)
         {
