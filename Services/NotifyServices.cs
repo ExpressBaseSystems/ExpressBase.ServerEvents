@@ -1,6 +1,5 @@
-﻿using ExpressBase.Objects.ServerEvents_Artifacts;
+﻿using ExpressBase.Common.ServerEvents_Artifacts;
 using ServiceStack;
-using ServiceStack.Configuration;
 using System;
 
 namespace ExpressBase.ServerEvents.Services
