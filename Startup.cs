@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceStack;
 using ServiceStack.Auth;
-using ServiceStack.Discovery.Redis;
 using ServiceStack.Logging;
 using ServiceStack.Redis;
 using System;
@@ -37,10 +36,8 @@ namespace ExpressBase.ServerEvents
             {
                 opts.ApplicationDiscriminator = "expressbase.serverevents";
             });
-            // Add framework services.
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
@@ -104,13 +101,6 @@ namespace ExpressBase.ServerEvents
             container.Register<IUserAuthRepository>(c => new RedisAuthRepository(c.Resolve<IRedisClientsManager>()));
             container.Register<IServerEvents>(c => new RedisServerEvents(c.Resolve<IRedisClientsManager>()));
             container.Resolve<IServerEvents>().Start();
-
-            SetConfig(new HostConfig
-            {
-                WebHostUrl = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_SERVEREVENTS_INT_URL)
-            });
-
-            Plugins.Add(new RedisServiceDiscoveryFeature());
 
             this.GlobalRequestFilters.Add((req, res, requestDto) =>
             {
