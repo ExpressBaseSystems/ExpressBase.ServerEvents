@@ -1,7 +1,8 @@
 ﻿using ExpressBase.Common;
 using ExpressBase.Common.Constants;
 using ExpressBase.Common.EbServiceStack.ReqNRes;
-using ExpressBase.Objects.ServiceStack_Artifacts;
+using ExpressBase.Common.ServiceStack;
+using ExpressBase.Common.ServiceStack.Auth;
 using Funq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -73,9 +74,8 @@ namespace ExpressBase.ServerEvents
                 PublicKeyXml = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_JWT_PUBLIC_KEY_XML),
 #if (DEBUG)
                 RequireSecureConnection = false,
+                //EncryptPayload = true,
 #endif
-                PersistSession = true,
-                SessionExpiry = TimeSpan.FromHours(12)
             };
 
             this.Plugins.Add(new CorsFeature(allowedHeaders: "Content-Type, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"));
@@ -98,7 +98,7 @@ namespace ExpressBase.ServerEvents
                Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PORT));
 
             container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisConnectionString));
-            container.Register<IUserAuthRepository>(c => new RedisAuthRepository(c.Resolve<IRedisClientsManager>()));
+            container.Register<IUserAuthRepository>(c => new MyRedisAuthRepository(c.Resolve<IRedisClientsManager>()));
             container.Register<IServerEvents>(c => new RedisServerEvents(c.Resolve<IRedisClientsManager>()));
             container.Resolve<IServerEvents>().Start();
 
