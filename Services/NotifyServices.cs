@@ -10,7 +10,8 @@ namespace ExpressBase.ServerEvents.Services
         {
         }
 
-        public bool Any(NotifyUserIdRequest request)
+        [Authenticate]
+        public bool Post(NotifyUserIdRequest request)
         {
             try
             {
@@ -31,7 +32,8 @@ namespace ExpressBase.ServerEvents.Services
             return true;
         }
 
-        public bool Any(NotifySubsribtionRequest request)
+        [Authenticate]
+        public bool Post(NotifySubsribtionRequest request)
         {
             try
             {
@@ -59,7 +61,8 @@ namespace ExpressBase.ServerEvents.Services
             return true;
         }
 
-        public bool Any(NotifyChannelRequest request)
+        [Authenticate]
+        public bool Post(NotifyChannelRequest request)
         {
             try
             {
