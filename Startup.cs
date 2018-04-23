@@ -1,7 +1,6 @@
 ﻿using ExpressBase.Common;
 using ExpressBase.Common.Constants;
 using ExpressBase.Common.EbServiceStack.ReqNRes;
-using ExpressBase.Common.ServiceStack;
 using ExpressBase.Common.ServiceStack.Auth;
 using Funq;
 using Microsoft.AspNetCore.Builder;
@@ -62,7 +61,9 @@ namespace ExpressBase.ServerEvents
 
     public class AppHost : AppHostBase
     {
-        public AppHost() : base("EXPRESSbase Server Events", typeof(AppHost).Assembly) { }
+        public AppHost() : base("EXPRESSbase Server Events", typeof(AppHost).Assembly)
+        {
+        }
 
         public override void Configure(Container container)
         {
@@ -84,8 +85,6 @@ namespace ExpressBase.ServerEvents
                 new IAuthProvider[] {
                     jwtprovider,
                 }));
-
-
 
 #if (DEBUG)
             SetConfig(new HostConfig { DebugMode = true });
@@ -165,7 +164,6 @@ namespace ExpressBase.ServerEvents
                     log.Info("InnerExceptionNontokenServices..........." + e.InnerException);
                 }
             });
-
         }
     }
 }
