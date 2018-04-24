@@ -11,7 +11,7 @@ namespace ExpressBase.ServerEvents.Services
         }
 
         [Authenticate]
-        public bool Post(NotifyUserIdRequest request)
+        public string Post(NotifyUserIdRequest request)
         {
             try
             {
@@ -27,9 +27,9 @@ namespace ExpressBase.ServerEvents.Services
             catch (Exception e)
             {
                 Console.WriteLine(e.ToJson());
-                return false;
+                return "Failed";
             }
-            return true;
+            return "Success";
         }
 
         [Authenticate]
