@@ -33,7 +33,7 @@ namespace ExpressBase.ServerEvents.Services
         }
 
         [Authenticate]
-        public bool Post(NotifySubsribtionRequest request)
+        public string Post(NotifySubsribtionRequest request)
         {
             try
             {
@@ -50,19 +50,19 @@ namespace ExpressBase.ServerEvents.Services
                 else
                 {
                     Console.WriteLine("SubscribtionId doesn't Exist");
-                    return false;
+                    return "false";
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToJson());
-                return false;
+                return "false";
             }
-            return true;
+            return "true";
         }
 
         [Authenticate]
-        public bool Post(NotifyChannelRequest request)
+        public string Post(NotifyChannelRequest request)
         {
             try
             {
@@ -81,9 +81,9 @@ namespace ExpressBase.ServerEvents.Services
             catch (Exception e)
             {
                 Console.WriteLine(e.ToJson());
-                return false;
+                return "false";
             }
-            return true;
+            return "true";
         }
     }
 }
