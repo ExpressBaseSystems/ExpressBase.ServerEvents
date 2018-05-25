@@ -11,8 +11,9 @@ namespace ExpressBase.ServerEvents.Services
         }
 
         [Authenticate]
-        public string Post(NotifyUserIdRequest request)
+        public NotifyResponse Post(NotifyUserIdRequest request)
         {
+            NotifyResponse res = new NotifyResponse();
             try
             {
                 var subscriptionInfos = ServerEvents.GetSubscriptionInfosByUserId(request.ToUserAuthId);
@@ -27,14 +28,15 @@ namespace ExpressBase.ServerEvents.Services
             catch (Exception e)
             {
                 Console.WriteLine(e.ToJson());
-                return "Failed";
+                res.ResponseStatus.Message = e.Message;
             }
-            return "Success";
+            return res;
         }
 
         [Authenticate]
-        public string Post(NotifySubsribtionRequest request)
+        public NotifyResponse Post(NotifySubsribtionRequest request)
         {
+            NotifyResponse res = new NotifyResponse();
             try
             {
                 var subscriptionInfos = ServerEvents.GetSubscriptionInfo(request.ToSubId);
@@ -50,20 +52,22 @@ namespace ExpressBase.ServerEvents.Services
                 else
                 {
                     Console.WriteLine("SubscribtionId doesn't Exist");
-                    return "false";
+                    res.ResponseStatus.Message = "SubscribtionId doesn't Exist";
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToJson());
-                return "false";
+                res.ResponseStatus.Message = e.Message;
             }
-            return "true";
+            return res;
         }
 
         [Authenticate]
-        public string Post(NotifyChannelRequest request)
+        public NotifyResponse Post(NotifyChannelRequest request)
         {
+            NotifyResponse res = new NotifyResponse();
+
             try
             {
                 //var subscriptionInfos = ServerEvents.GetSubscriptionsDetails(request.ToChannel);
@@ -81,9 +85,9 @@ namespace ExpressBase.ServerEvents.Services
             catch (Exception e)
             {
                 Console.WriteLine(e.ToJson());
-                return "false";
+                res.ResponseStatus.Message = e.Message;
             }
-            return "true";
+            return res;
         }
     }
 }
