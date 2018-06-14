@@ -13,6 +13,7 @@ namespace ExpressBase.ServerEvents.Services
         [Authenticate]
         public NotifyResponse Post(NotifyUserIdRequest request)
         {
+            Console.WriteLine("---------------------->Inside notifyUserIdReq \nUserId: " + request.ToUserAuthId);
             NotifyResponse res = new NotifyResponse();
             try
             {
