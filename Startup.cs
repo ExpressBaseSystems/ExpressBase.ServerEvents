@@ -79,7 +79,7 @@ namespace ExpressBase.ServerEvents
 #endif
             };
 
-            this.Plugins.Add(new CorsFeature(allowedHeaders: "Content-Type, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"));
+            this.Plugins.Add(new CorsFeature(allowedHeaders: "rToken, bToken, Content-Type, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"));
             this.Plugins.Add(new ServerEventsFeature());
             this.Plugins.Add(new AuthFeature(() => new CustomUserSession(),
                 new IAuthProvider[] {
@@ -117,6 +117,10 @@ namespace ExpressBase.ServerEvents
                             res.ReturnAuthRequired();
                         else
                         {
+                            if (req.Headers[CacheConstants.RTOKEN] != null)
+                            {
+                                log.Info("Req Headers Not Null");
+                            }
                             var jwtoken = new JwtSecurityToken(auth.Replace("Bearer", string.Empty).Trim());
                             foreach (var c in jwtoken.Claims)
                             {
