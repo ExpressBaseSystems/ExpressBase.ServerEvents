@@ -14,6 +14,7 @@ using ServiceStack.Logging;
 using ServiceStack.Redis;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 
 namespace ExpressBase.ServerEvents
 {
@@ -100,6 +101,13 @@ namespace ExpressBase.ServerEvents
             container.Register<IUserAuthRepository>(c => new MyRedisAuthRepository(c.Resolve<IRedisClientsManager>()));
             container.Register<IServerEvents>(c => new RedisServerEvents(c.Resolve<IRedisClientsManager>()));
             container.Resolve<IServerEvents>().Start();
+
+            //Setting Assembly version in Redis
+            RedisClient client = (container.Resolve<IRedisClientsManager>() as RedisManagerPool).GetClient() as RedisClient;
+            AssemblyName assembly = Assembly.GetExecutingAssembly().GetName();
+            String version = assembly.Name.ToString() + " - " + assembly.Version.ToString();
+            client.Set("ServerEventsAssembly", version);
+
 
             this.GlobalRequestFilters.Add((req, res, requestDto) =>
             {
