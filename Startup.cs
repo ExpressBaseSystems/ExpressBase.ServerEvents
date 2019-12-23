@@ -92,12 +92,22 @@ namespace ExpressBase.ServerEvents
 #endif
             SetConfig(new HostConfig { DefaultContentType = MimeTypes.Json });
 
-            var redisConnectionString = string.Format("redis://{0}@{1}:{2}",
-               Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PASSWORD),
-               Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_SERVER),
-               Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PORT));
+            string env = Environment.GetEnvironmentVariable(EnvironmentConstants.ASPNETCORE_ENVIRONMENT);
 
-            container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisConnectionString));
+            var redisServer = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_SERVER);
+            var redisPassword = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PASSWORD);
+            var redisPort = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PORT);
+
+            if (env == "Development" || env == "Production")
+            { 
+                var redisConnectionString = string.Format("redis://{0}@{1}:{2}", redisPassword, redisServer, redisPort);
+                container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisConnectionString));
+            }
+            else
+            {
+                container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisServer));
+            }
+
             container.Register<IUserAuthRepository>(c => new MyRedisAuthRepository(c.Resolve<IRedisClientsManager>()));
             container.Register<IServerEvents>(c => new RedisServerEvents(c.Resolve<IRedisClientsManager>()));
             container.Resolve<IServerEvents>().Start();
