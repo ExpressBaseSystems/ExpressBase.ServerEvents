@@ -98,14 +98,14 @@ namespace ExpressBase.ServerEvents
             var redisPassword = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PASSWORD);
             var redisPort = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_REDIS_PORT);
 
-            if (env == "Development" || env == "Production")
-            { 
-                var redisConnectionString = string.Format("redis://{0}@{1}:{2}", redisPassword, redisServer, redisPort);
-                container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisConnectionString));
+            if (env == "Staging")
+            {
+                container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisServer));
             }
             else
             {
-                container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisServer));
+                var redisConnectionString = string.Format("redis://{0}@{1}:{2}", redisPassword, redisServer, redisPort);
+                container.Register<IRedisClientsManager>(c => new RedisManagerPool(redisConnectionString));
             }
 
             container.Register<IUserAuthRepository>(c => new MyRedisAuthRepository(c.Resolve<IRedisClientsManager>()));
