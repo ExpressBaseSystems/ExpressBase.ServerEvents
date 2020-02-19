@@ -1,14 +1,13 @@
 ﻿using ExpressBase.Common.ServerEvents_Artifacts;
 using ServiceStack;
+using ServiceStack.Messaging;
 using System;
 
 namespace ExpressBase.ServerEvents.Services
 {
     public class NotifyServices : BaseService
     {
-        public NotifyServices(IServerEvents _se) : base(_se)
-        {
-        }
+        public NotifyServices(IServerEvents _se, IMessageProducer _mqp) : base(_se, _mqp) { }
 
         [Authenticate]
         public NotifyResponse Post(NotifyUserIdRequest request)
@@ -17,6 +16,18 @@ namespace ExpressBase.ServerEvents.Services
             NotifyResponse res = new NotifyResponse();
             try
             {
+                if (request.Selector == "cmd.onNotification")
+                {
+                    this.MessageProducer3.Publish(new NotificationToDBRequest()
+                    {
+                        SolnId = request.SolnId,
+                        UserId = request.UserId,
+                        NotifyUserId = request.NotifyUserId,
+                        Notification = request.Msg,
+                        NotificationId = request.NotificationId
+                    });
+                }
+
                 var subscriptionInfos = ServerEvents.GetSubscriptionInfosByUserId(request.ToUserAuthId);
 
                 foreach (var sub in subscriptionInfos)
@@ -82,6 +93,34 @@ namespace ExpressBase.ServerEvents.Services
                 //    {
                 //    Console.WriteLine("No one listening in the Channel: " + request.ToChannel.ToJson());
                 //}
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToJson());
+                res.ResponseStatus.Message = e.Message;
+            }
+            return res;
+        }
+
+        [Authenticate]
+        public NotifyResponse Post(NotifyUsersRequest request)
+        {
+            NotifyResponse res = new NotifyResponse();
+            try
+            {
+                for (int i = 0; i < request.UsersId.Length; i++)
+                {
+                    this.Post(new NotifyUserIdRequest
+                    {
+                        Msg = request.Msg,
+                        Selector = request.Selector,
+                        ToUserAuthId = request.UserAuthId,
+                        NotificationId = request.NotificationId,
+                        NotifyUserId = request.UsersId[i],
+                        SolnId = request.SolnId
+                    });
+                }
+
             }
             catch (Exception e)
             {
