@@ -46,7 +46,7 @@ namespace ExpressBase.ServerEvents.Services
         }
 
         [Authenticate]
-        public NotifyResponse Post(NotifySubsribtionRequest request)
+        public NotifyResponse Post(NotifySubscriptionRequest request)
         {
             NotifyResponse res = new NotifyResponse();
             try
@@ -108,7 +108,7 @@ namespace ExpressBase.ServerEvents.Services
             NotifyResponse res = new NotifyResponse();
             try
             {
-                for (int i = 0; i < request.UsersId.Length; i++)
+                foreach(int user_id in request.UsersId)
                 {
                     this.Post(new NotifyUserIdRequest
                     {
@@ -116,7 +116,7 @@ namespace ExpressBase.ServerEvents.Services
                         Selector = request.Selector,
                         ToUserAuthId = request.UserAuthId,
                         NotificationId = request.NotificationId,
-                        NotifyUserId = request.UsersId[i],
+                        NotifyUserId = user_id,
                         SolnId = request.SolnId
                     });
                 }
