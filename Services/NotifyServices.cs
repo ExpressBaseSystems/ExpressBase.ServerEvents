@@ -2,6 +2,7 @@
 using ServiceStack;
 using ServiceStack.Messaging;
 using System;
+using System.Collections.Generic;
 
 namespace ExpressBase.ServerEvents.Services
 {
@@ -108,15 +109,15 @@ namespace ExpressBase.ServerEvents.Services
             NotifyResponse res = new NotifyResponse();
             try
             {
-                foreach(int user_id in request.UsersId)
+                foreach(KeyValuePair<int, string> user_details in request.UsersDetails)
                 {
                     this.Post(new NotifyUserIdRequest
                     {
                         Msg = request.Msg,
                         Selector = request.Selector,
-                        ToUserAuthId = request.UserAuthId,
+                        ToUserAuthId = user_details.Value,
                         NotificationId = request.NotificationId,
-                        NotifyUserId = user_id,
+                        NotifyUserId = user_details.Key,
                         SolnId = request.SolnId
                     });
                 }
