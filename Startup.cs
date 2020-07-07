@@ -77,10 +77,8 @@ namespace ExpressBase.ServerEvents
             {
                 HashAlgorithm = "RS256",
                 PublicKeyXml = Environment.GetEnvironmentVariable(EnvironmentConstants.EB_JWT_PUBLIC_KEY_XML),
-#if (DEBUG)
                 RequireSecureConnection = false,
                 //EncryptPayload = true,
-#endif
             };
 
             this.Plugins.Add(new CorsFeature(allowedHeaders: "rToken, bToken, Content-Type, Authorization, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"));
