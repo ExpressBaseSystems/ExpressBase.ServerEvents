@@ -27,8 +27,9 @@ namespace ExpressBase.ServerEvents.Services
                         Notification = request.Msg,
                         NotificationId = request.NotificationId
                     });
+                    Console.WriteLine("---------------------->After NotificationToDBRequest UserId: " + request.ToUserAuthId);
                 }
-
+                Console.WriteLine("request.Selector" + request.Selector + "------------No NotificationToDBRequest----------> UserId: " + request.ToUserAuthId);
                 var subscriptionInfos = ServerEvents.GetSubscriptionInfosByUserId(request.ToUserAuthId);
 
                 foreach (var sub in subscriptionInfos)
@@ -40,7 +41,7 @@ namespace ExpressBase.ServerEvents.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToJson());
+                Console.WriteLine(e.Message + e.StackTrace);
                 res.ResponseStatus.Message = e.Message;
             }
             return res;
@@ -109,7 +110,7 @@ namespace ExpressBase.ServerEvents.Services
             NotifyResponse res = new NotifyResponse();
             try
             {
-                foreach(KeyValuePair<int, string> user_details in request.UsersDetails)
+                foreach (KeyValuePair<int, string> user_details in request.UsersDetails)
                 {
                     this.Post(new NotifyUserIdRequest
                     {
