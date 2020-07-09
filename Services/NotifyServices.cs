@@ -30,13 +30,13 @@ namespace ExpressBase.ServerEvents.Services
                     Console.WriteLine("---------------------->After NotificationToDBRequest UserId: " + request.ToUserAuthId);
                 }
                 Console.WriteLine("request.Selector" + request.Selector + "------------No NotificationToDBRequest----------> UserId: " + request.ToUserAuthId);
-                var subscriptionInfos = ServerEvents.GetSubscriptionInfosByUserId(request.ToUserAuthId);
+                List<SubscriptionInfo> subscriptionInfos = ServerEvents.GetSubscriptionInfosByUserId(request.ToUserAuthId);
 
-                foreach (var sub in subscriptionInfos)
+                foreach (SubscriptionInfo sub in subscriptionInfos)
                     if (request.ToChannel == null)
                         ServerEvents.NotifySubscription(sub.SubscriptionId, request.Selector, request.Msg);
                     else
-                        foreach (var channel in request.ToChannel)
+                        foreach (string channel in request.ToChannel)
                             ServerEvents.NotifySubscription(sub.SubscriptionId, request.Selector, request.Msg, channel);
             }
             catch (Exception e)
@@ -53,14 +53,14 @@ namespace ExpressBase.ServerEvents.Services
             NotifyResponse res = new NotifyResponse();
             try
             {
-                var subscriptionInfos = ServerEvents.GetSubscriptionInfo(request.ToSubId);
+                SubscriptionInfo subscriptionInfos = ServerEvents.GetSubscriptionInfo(request.ToSubscriptionId);
 
                 if (!String.IsNullOrEmpty(subscriptionInfos.SubscriptionId))
                 {
                     if (request.ToChannel == null)
                         ServerEvents.NotifySubscription(subscriptionInfos.SubscriptionId, request.Selector, request.Msg);
                     else
-                        foreach (var channel in request.ToChannel)
+                        foreach (string channel in request.ToChannel)
                             ServerEvents.NotifySubscription(subscriptionInfos.SubscriptionId, request.Selector, request.Msg, channel);
                 }
                 else
@@ -88,7 +88,7 @@ namespace ExpressBase.ServerEvents.Services
 
                 //if (subscriptionInfos != null)
                 //{
-                foreach (var channel in request.ToChannel)
+                foreach (string channel in request.ToChannel)
                     ServerEvents.NotifyChannel(channel, request.Selector, request.Msg);
                 //}
                 //    else
