@@ -53,25 +53,35 @@ namespace ExpressBase.ServerEvents.Services
             NotifyResponse res = new NotifyResponse();
             try
             {
+                Console.WriteLine("Reached in NotifySubscriptionRequest");
                 SubscriptionInfo subscriptionInfos = ServerEvents.GetSubscriptionInfo(request.ToSubscriptionId);
-
-                if (!String.IsNullOrEmpty(subscriptionInfos.SubscriptionId))
+                if (subscriptionInfos != null)
                 {
-                    if (request.ToChannel == null)
-                        ServerEvents.NotifySubscription(subscriptionInfos.SubscriptionId, request.Selector, request.Msg);
+                    if (!String.IsNullOrEmpty(subscriptionInfos.SubscriptionId))
+                    {
+                        Console.WriteLine("SubscriptionId :" + subscriptionInfos.SubscriptionId);
+                        if (request.ToChannel == null)
+                            ServerEvents.NotifySubscription(subscriptionInfos.SubscriptionId, request.Selector, request.Msg);
+                        else
+                            foreach (string channel in request.ToChannel)
+                                ServerEvents.NotifySubscription(subscriptionInfos.SubscriptionId, request.Selector, request.Msg, channel);
+                    }
                     else
-                        foreach (string channel in request.ToChannel)
-                            ServerEvents.NotifySubscription(subscriptionInfos.SubscriptionId, request.Selector, request.Msg, channel);
+                    {
+                        Console.WriteLine("SubscribtionId doesn't Exist");
+                        res.ResponseStatus.Message = "SubscribtionId doesn't Exist";
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("SubscribtionId doesn't Exist");
-                    res.ResponseStatus.Message = "SubscribtionId doesn't Exist";
+                    Console.WriteLine("subscriptionInfos Is Null");
+                    res.ResponseStatus.Message = "subscriptionInfos Is Null";
                 }
+
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToJson());
+                Console.WriteLine(e.Message + e.StackTrace);
                 res.ResponseStatus.Message = e.Message;
             }
             return res;
