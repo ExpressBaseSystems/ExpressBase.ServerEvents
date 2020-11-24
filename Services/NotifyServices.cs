@@ -86,6 +86,39 @@ namespace ExpressBase.ServerEvents.Services
             }
             return res;
         }
+		 [Authenticate]
+        public NotifyResponse Post(NotifySingleSubscriptionRequest request)
+        {
+            NotifyResponse res = new NotifyResponse();
+            try
+            {
+                Console.WriteLine("Reached in NotifySingleSubscriptionRequest");
+				if (!String.IsNullOrEmpty(request.ToSubscriptionId))
+				{
+
+					if (ServerEvents.Pulse(request.ToSubscriptionId))
+					{
+						if (request.ToChannel == null)
+							ServerEvents.NotifySubscription(request.ToSubscriptionId, request.Selector, request.Msg);
+						else
+							foreach (string channel in request.ToChannel)
+								ServerEvents.NotifySubscription(request.ToSubscriptionId, request.Selector, request.Msg, channel);
+					}
+				}
+				else
+				{
+					Console.WriteLine("SubscribtionId doesn't Exist");
+					res.ResponseStatus.Message = "SubscribtionId doesn't Exist";
+				}
+				
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + e.StackTrace);
+                res.ResponseStatus.Message = e.Message;
+            }
+            return res;
+        }
 
         [Authenticate]
         public NotifyResponse Post(NotifyChannelRequest request)
