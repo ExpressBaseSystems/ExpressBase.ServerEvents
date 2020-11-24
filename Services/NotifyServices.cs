@@ -68,8 +68,8 @@ namespace ExpressBase.ServerEvents.Services
                     }
                     else
                     {
-                        Console.WriteLine("SubscribtionId doesn't Exist");
-                        res.ResponseStatus.Message = "SubscribtionId doesn't Exist";
+                        Console.WriteLine("SubscriptionId doesn't Exist");
+                        res.ResponseStatus.Message = "SubscriptionId doesn't Exist";
                     }
                 }
                 else
