@@ -119,6 +119,35 @@ namespace ExpressBase.ServerEvents.Services
             }
             return res;
         }
+		 public NotifyResponse Post(NotifyUserAuthIdRequest request)
+        {
+            NotifyResponse res = new NotifyResponse();
+            try
+            {
+				Console.WriteLine("Reached in NotifyUserAuthIdRequest");
+				if (!String.IsNullOrEmpty(request.UserAuthId))
+				{
+					if (request.ToChannel == null)
+						ServerEvents.NotifyUserId(request.To_UserAuthId, request.Selector, request.Msg);
+					else
+						foreach (string channel in request.ToChannel)
+							ServerEvents.NotifyUserId(request.To_UserAuthId, request.Selector, request.Msg);
+
+				}
+				else
+				{
+					Console.WriteLine("UserAuthId doesn't Exist");
+					res.ResponseStatus.Message = "UserAuthId doesn't Exist";
+				}
+
+			}
+			catch (Exception e)
+            {
+                Console.WriteLine(e.Message + e.StackTrace);
+                res.ResponseStatus.Message = e.Message;
+            }
+            return res;
+        }
 
         [Authenticate]
         public NotifyResponse Post(NotifyChannelRequest request)
