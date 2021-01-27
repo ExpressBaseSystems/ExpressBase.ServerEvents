@@ -119,13 +119,15 @@ namespace ExpressBase.ServerEvents.Services
             }
             return res;
         }
-		 public NotifyResponse Post(NotifyUserAuthIdRequest request)
+
+		[Authenticate]
+		public NotifyResponse Post(NotifyUserAuthIdRequest request)
         {
             NotifyResponse res = new NotifyResponse();
             try
             {
 				Console.WriteLine("Reached in NotifyUserAuthIdRequest");
-				if (!String.IsNullOrEmpty(request.UserAuthId))
+				if (!String.IsNullOrEmpty(request.To_UserAuthId))
 				{
 					if (request.ToChannel == null)
 						ServerEvents.NotifyUserId(request.To_UserAuthId, request.Selector, request.Msg);
@@ -203,5 +205,29 @@ namespace ExpressBase.ServerEvents.Services
             }
             return res;
         }
-    }
+		public CheckSubscriptionId_IsActiveResponse Post (CheckSubscriptionId_IsActiveRequest request)
+		{
+			CheckSubscriptionId_IsActiveResponse res = new CheckSubscriptionId_IsActiveResponse
+			{
+				IsActive = ServerEvents.Pulse(request.ToSubscriptionId)
+			};
+			return res;
+		}
+
+		public GetSubscriptionId_InfoResponse Post (GetSubscriptionId_InfoRequest request)
+		{
+			GetSubscriptionId_InfoResponse res = new GetSubscriptionId_InfoResponse();
+			SubscriptionInfo SubInfos = ServerEvents.GetSubscriptionInfo(request.ToSubscriptionId);
+			res.AuthId = SubInfos.UserId;
+			if (SubInfos.UserId.Length > 0)
+			{
+				string[] Values = SubInfos.UserId.Split(':');
+				res.SolnId = Values[0];
+				res.UserId = Values[1];
+				res.Wc = Values[2];
+			}
+			return res;
+		}
+
+	}
 }
