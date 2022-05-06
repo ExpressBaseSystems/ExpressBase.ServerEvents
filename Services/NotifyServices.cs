@@ -50,7 +50,7 @@ namespace ExpressBase.ServerEvents.Services
         [Authenticate]
         public NotifyResponse Post(NotifySubscriptionRequest request)
         {
-            NotifyResponse res = new NotifyResponse();
+            NotifyResponse res = new NotifyResponse { ResponseStatus = new ResponseStatus() };
             try
             {
                 Console.WriteLine("Reached in NotifySubscriptionRequest");
